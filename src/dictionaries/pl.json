@@ -47,6 +47,11 @@
     "rateLimitError": "Zbyt wiele prób wysyłania. Aby zapobiec spamowi (Rate Limit), włączyliśmy blokadę bezpieczeństwa. Odczekaj dłuższy czas przed kolejnym plikiem."
   },
   "download": {
+    "heroBadge": "Szyfrowane połączenie",
+    "heroTitle1": "Twoja paczka jest",
+    "heroTitle2": "gotowa do",
+    "heroTitleHighlight": "odbioru.",
+    "heroDesc": "Pobierasz pliki za pomocą szybkiej, globalnej sieci Megadrop. Zachowujemy pełną anonimowość pomiędzy klientami chmury.",
     "enterPassword": "Ten plik jest zabezpieczony",
     "passwordPlaceholder": "Podaj hasło...",
     "unlockAction": "Odblokuj plik",

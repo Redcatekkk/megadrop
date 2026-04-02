@@ -47,6 +47,11 @@
     "rateLimitError": "Too many upload attempts. To prevent spam (Rate Limit), we have enabled a security block. Please wait before uploading another file."
   },
   "download": {
+    "heroBadge": "Encrypted Connection",
+    "heroTitle1": "Your package is",
+    "heroTitle2": "ready for",
+    "heroTitleHighlight": "download.",
+    "heroDesc": "You are downloading through Megadrop's high-speed global network. We maintain absolute anonymity between cloud clients.",
     "enterPassword": "This file is secured",
     "passwordPlaceholder": "Enter password...",
     "unlockAction": "Unlock file",
