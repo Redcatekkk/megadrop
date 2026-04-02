@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import { DownloadCloud, Lock, Eye, Film, Image as ImgIcon, Timer, ShieldAlert } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import AdSpace from "@/components/AdSpace";
+import { useI18n } from "@/components/I18nProvider";
 
 export default function DownloadClientUI({ id, fileName, sizeBytes, hasPassword, isOneTime, expiresAt }: { id: string, fileName: string, sizeBytes: number, hasPassword: boolean, isOneTime?: boolean, expiresAt?: number | null }) {
+  const dict = useI18n();
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -30,19 +32,19 @@ export default function DownloadClientUI({ id, fileName, sizeBytes, hasPassword,
     const updateTime = () => {
       const diffHours = (expiresAt - Date.now()) / (1000 * 60 * 60);
       if (diffHours <= 0) {
-        setTimeLeft("plik wygasł");
+        setTimeLeft(dict.download.expired);
         return;
       }
       
       if (diffHours < 1) {
         const mins = Math.floor(diffHours * 60);
-        setTimeLeft(`wygasa za ${mins} ${mins === 1 ? 'minutę' : mins >= 2 && mins <= 4 ? 'minuty' : 'minut'}`);
+        setTimeLeft(`${dict.download.expiresIn} ${mins} ${mins === 1 ? dict.download.minute : mins >= 2 && mins <= 4 ? dict.download.minutes24 : dict.download.minutes}`);
       } else if (diffHours < 24) {
         const hrs = Math.floor(diffHours);
-        setTimeLeft(`wygasa za ${hrs} ${hrs === 1 ? 'godzinę' : hrs >= 2 && hrs <= 4 ? 'godziny' : 'godzin'}`);
+        setTimeLeft(`${dict.download.expiresIn} ${hrs} ${hrs === 1 ? dict.download.hour : hrs >= 2 && hrs <= 4 ? dict.download.hours24 : dict.download.hours}`);
       } else {
         const days = Math.floor(diffHours / 24);
-        setTimeLeft(`wygasa za ${days} ${days === 1 ? 'dzień' : 'dni'}`);
+        setTimeLeft(`${dict.download.expiresIn} ${days} ${days === 1 ? dict.download.day : dict.download.days}`);
       }
     };
 
@@ -77,7 +79,7 @@ export default function DownloadClientUI({ id, fileName, sizeBytes, hasPassword,
       }
       setIsProcessing(false);
     } catch (e) {
-      setError("Wystąpił błąd po stronie klienta.");
+      setError(dict.download.errorClient);
       setIsProcessing(false);
     }
   };
@@ -106,7 +108,7 @@ export default function DownloadClientUI({ id, fileName, sizeBytes, hasPassword,
               
               {isOneTime && (
                 <p className="text-red-600 font-bold bg-red-50 border border-red-200 px-4 py-1.5 rounded-full text-sm flex items-center gap-1.5 shadow-sm">
-                  <ShieldAlert className="w-4 h-4"/> Wybucha po pobraniu
+                  <ShieldAlert className="w-4 h-4"/> {dict.download.bombWarningTag}
                 </p>
               )}
               
@@ -124,7 +126,7 @@ export default function DownloadClientUI({ id, fileName, sizeBytes, hasPassword,
                 </div>
                 <input 
                   type="password"
-                  placeholder="Ten plik wymaga hasła"
+                  placeholder={dict.download.passwordPlaceholder}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full bg-white border-2 border-gray-200 rounded-xl py-4 pl-12 pr-4 text-black focus:outline-none focus:border-primary focus:ring-4 ring-primary/20 transition-all font-medium placeholder-gray-400"
@@ -142,7 +144,7 @@ export default function DownloadClientUI({ id, fileName, sizeBytes, hasPassword,
                 disabled={isProcessing}
                 className="w-full py-4 rounded-xl font-bold text-white text-lg bg-primary hover:bg-[#e66000] transition-all shadow-xl shadow-primary/25 active:scale-95 disabled:opacity-50 disabled:scale-100 flex justify-center items-center gap-2"
               >
-                {isProcessing ? "Przetwarzanie..." : "Pobierz Teraz"}
+                {isProcessing ? dict.download.processing : dict.download.downloadBtn}
                 {!isProcessing && <DownloadCloud className="w-5 h-5"/>}
               </button>
 
@@ -152,7 +154,7 @@ export default function DownloadClientUI({ id, fileName, sizeBytes, hasPassword,
                   disabled={isProcessing}
                   className="w-full py-3.5 rounded-xl font-bold text-gray-700 bg-gray-100 border border-gray-200 hover:bg-gray-200 transition-all active:scale-95 disabled:opacity-50 flex justify-center items-center gap-2"
                 >
-                  <Eye className="w-5 h-5"/> Podgląd wideo
+                  <Eye className="w-5 h-5"/> {dict.download.previewBtn}
                 </button>
               )}
             </div>
@@ -162,7 +164,7 @@ export default function DownloadClientUI({ id, fileName, sizeBytes, hasPassword,
             </div>
 
             <p className="text-xs text-gray-400 font-medium text-center mt-6 px-4">
-              Zgodnie z naszym regulaminem, plik pobierasz na własną odpowiedzialność. Zapisz go bezpiecznie na dysku lokalnym.
+              {dict.download.tosText}
             </p>
           </motion.div>
         ) : (
@@ -174,13 +176,13 @@ export default function DownloadClientUI({ id, fileName, sizeBytes, hasPassword,
                    onClick={() => setPreviewData(null)}
                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-semibold text-sm hover:bg-gray-200 transition-colors"
                   >
-                    Wróć
+                    {dict.download.backBtnText}
                  </button>
                  <button 
                    onClick={() => window.location.href = previewData.dlUrl}
                    className="px-4 py-2 bg-primary text-white rounded-lg font-semibold text-sm hover:bg-[#e66000] flex items-center gap-2 shadow-md shadow-primary/20"
                   >
-                    <DownloadCloud className="w-4 h-4"/> Zapisz
+                    <DownloadCloud className="w-4 h-4"/> {dict.download.saveBtn}
                  </button>
                </div>
              </div>
@@ -188,13 +190,13 @@ export default function DownloadClientUI({ id, fileName, sizeBytes, hasPassword,
              <div className="w-full bg-black rounded-2xl overflow-hidden shadow-2xl relative aspect-video flex-shrink-0 flex items-center justify-center border border-gray-200">
                {previewData.mime.startsWith('image/') ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                 <img src={previewData.url} alt="Podgląd" className="max-w-full max-h-full object-contain" />
+                 <img src={previewData.url} alt={dict.download.previewTitle} className="max-w-full max-h-full object-contain" />
                ) : previewData.mime.startsWith('video/') ? (
                  <video src={previewData.url} controls autoPlay className="w-full h-full outline-none" />
                ) : (
                  <div className="flex flex-col items-center text-white p-8">
                    <Film className="w-12 h-12 mb-4 text-gray-500" />
-                   <p>Ten plik musi zostać pobrany aby go zobaczyć.</p>
+                   <p>{dict.download.mustDownloadText}</p>
                  </div>
                )}
              </div>

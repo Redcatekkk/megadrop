@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { Heart, ShieldCheck } from "lucide-react";
+import { useI18n } from "@/components/I18nProvider";
 
 export default function AdSpace({ dataAdSlot, className = "" }: { dataAdSlot?: string, className?: string }) {
+  const dict = useI18n();
   const [adBlocked, setAdBlocked] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -51,17 +53,17 @@ export default function AdSpace({ dataAdSlot, className = "" }: { dataAdSlot?: s
           <ShieldCheck className="w-10 h-10 text-orange-500" />
           <Heart className="w-10 h-10 text-red-500 fill-red-500" />
         </div>
-        <h3 className="text-xl font-black text-foreground tracking-tight">Wykryliśmy Twojego AdBlocka!</h3>
-        <p className="text-base font-medium text-gray-600 max-w-sm leading-relaxed">
-          I wiesz co? Zdecydowaliśmy zablokować reklamy <b>specjalnie dla Ciebie</b>. Nie każemy Ci go wyłączać, w zamian ciesz się pobieraniem pliku najwyższej jakości!
-        </p>
+        <h3 className="text-xl font-black text-foreground tracking-tight">{dict.adspace.adblockDetected}</h3>
+        <p className="text-base font-medium text-gray-600 max-w-sm leading-relaxed" dangerouslySetInnerHTML={{ 
+          __html: dict.adspace.adblockMessage.replace('specially for you', '<b>specially for you</b>').replace('specjalnie dla Ciebie', '<b>specjalnie dla Ciebie</b>') 
+        }} />
       </div>
     );
   }
 
   return (
     <div className={`w-full flex flex-col items-center justify-center bg-gray-50 border border-gray-200 rounded-[2rem] p-4 min-h-[120px] overflow-hidden ${className}`}>
-      <span className="text-xs text-gray-400 font-bold mb-2 uppercase tracking-wider">Reklama / Sponsor</span>
+      <span className="text-xs text-gray-400 font-bold mb-2 uppercase tracking-wider">{dict.adspace.sponsor}</span>
       <div className="w-full flex items-center justify-center relative min-h-[250px]">
         {/* Placeholder deweloperski widoczny na szaro jeśli AdSense nie wrzuci jeszcze iframe'a */}
         <div className="absolute inset-0 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-xl text-gray-400 font-bold z-0 opacity-50 pointer-events-none">

@@ -66,7 +66,7 @@ export default function Home() {
       const data = await res.json();
       
       if (!data.success) {
-        alert("Błąd integracji bazy danych: " + data.error);
+        alert(dict.home.dbError + data.error);
         setIsUploading(false);
         return;
       }
@@ -88,13 +88,13 @@ export default function Home() {
           const link = `${window.location.origin}/f/${data.fileId}`;
           setDownloadLink(link);
         } else {
-          alert("Wystąpił błąd podczas wysyłania pliku na serwer");
+          alert(dict.home.uploadError);
           setIsUploading(false);
         }
       };
 
       xhr.onerror = () => {
-        alert("Wystąpił błąd sieci podczas wysyłania.");
+        alert(dict.home.netError);
         setIsUploading(false);
       };
 
@@ -102,7 +102,7 @@ export default function Home() {
     } catch (error) {
       console.error(error);
       setIsUploading(false);
-      alert("Niespodziewany błąd.");
+      alert(dict.home.unexpectedError);
     }
   };
 
@@ -141,7 +141,7 @@ export default function Home() {
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/20 bg-primary/10 text-primary text-sm font-semibold mb-2"
           >
             <Zap className="w-4 h-4 fill-primary" />
-            <span>Megadrop Płonie Szybkością</span>
+            <span>{dict.home.heroBadge}</span>
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, y: -5 }}
@@ -149,7 +149,7 @@ export default function Home() {
             transition={{ delay: 0.1 }}
             className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground mb-4"
           >
-            Szybki hosting. <br className="md:hidden" /> Bez <span className="text-gradient">kompromisów.</span>
+            {dict.home.heroTitle1} <br className="md:hidden" /> {dict.home.heroTitle2} <span className="text-gradient">{dict.home.heroTitleHighlight}</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0 }}
@@ -157,7 +157,7 @@ export default function Home() {
             transition={{ delay: 0.2 }}
             className="text-gray-600 max-w-lg mx-auto font-medium"
           >
-            Udostępniaj potężne pliki w mgnieniu oka. Opcjonalne hasła, jednorazowe pobrania – wszystko dla Twojego bezpieczeństwa.
+            {dict.home.heroDesc}
           </motion.p>
         </div>
 
@@ -189,8 +189,8 @@ export default function Home() {
                     <CheckCircle2 className="w-8 h-8 text-green-600" />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold text-foreground mb-2">Plik gotowy do udostępnienia!</h3>
-                    <p className="text-gray-600 font-medium">Skopiuj poniższy link i wyślij go odbiorcy.</p>
+                    <h3 className="text-2xl font-bold text-foreground mb-2">{dict.home.fileReady}</h3>
+                    <p className="text-gray-600 font-medium">{dict.home.copyHelperText}</p>
                   </div>
                   
                   <div className="flex w-full overflow-hidden items-center pl-4 bg-secondary rounded-xl border border-gray-200 focus-within:border-primary focus-within:ring-2 ring-primary/20 transition-all">
@@ -207,12 +207,12 @@ export default function Home() {
                         copied ? "bg-green-600 text-white" : "bg-primary text-white hover:bg-[#e66000]"
                       )}
                     >
-                      {copied ? "Skopiowano!" : "Kopiuj"}
+                      {copied ? dict.home.copied : dict.home.copy}
                     </button>
                   </div>
 
                   <button onClick={resetUpload} className="text-sm font-semibold text-gray-500 hover:text-black underline decoration-2 underline-offset-4 mt-2">
-                    Wgraj kolejny plik
+                    {dict.home.uploadNext}
                   </button>
                 </motion.div>
               ) : !file ? (
@@ -227,8 +227,8 @@ export default function Home() {
                     <UploadCloud className="w-12 h-12 text-primary" />
                   </div>
                   <div>
-                    <p className="text-xl font-bold text-foreground">Kliknij lub przeciągnij plik tutaj</p>
-                    <p className="text-sm text-gray-500 mt-2 font-medium">Brak limitów prędkości. Darmowy storage.</p>
+                    <p className="text-xl font-bold text-foreground">{dict.home.clickOrDrag}</p>
+                    <p className="text-sm text-gray-500 mt-2 font-medium">{dict.home.noLimits}</p>
                   </div>
                   <input type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onChange={(e) => {
                     if (e.target.files && e.target.files.length > 0) setFile(e.target.files[0]);
@@ -268,7 +268,7 @@ export default function Home() {
                         {file.name}
                       </p>
                       <p className={cn("text-xs mt-0.5 font-bold transition-colors", isUploading ? "text-slate-800 drop-shadow-sm" : "text-gray-500")}>
-                        {isUploading ? `Przesyłanie pliku: ${progress}%` : formatFileSize(file.size)}
+                        {isUploading ? `${dict.home.uploadingFile} ${progress}%` : formatFileSize(file.size)}
                       </p>
                     </div>
 
@@ -299,14 +299,14 @@ export default function Home() {
                           <div className="flex items-start gap-3">
                             <input type="checkbox" checked={hasPassword} onChange={(e) => setHasPassword(e.target.checked)} className="mt-1 accent-primary w-4 h-4 cursor-pointer" />
                             <div>
-                              <p className="text-sm font-bold flex items-center gap-1.5 text-foreground"><Lock className="w-4 h-4 text-gray-600"/> Zabezpiecz hasłem</p>
-                              <p className="text-xs text-gray-500 mt-1 font-medium">wymagane przy pobraniu/podglądzie.</p>
+                              <p className="text-sm font-bold flex items-center gap-1.5 text-foreground"><Lock className="w-4 h-4 text-gray-600"/> {dict.home.secureWithPassword}</p>
+                              <p className="text-xs text-gray-500 mt-1 font-medium">{dict.home.passwordRequiredExt}</p>
                             </div>
                           </div>
                           {hasPassword && (
                             <input 
                               type="password" 
-                              placeholder="Wpisz mocne hasło..." 
+                              placeholder={dict.home.inputPasswordStrong} 
                               value={password}
                               onChange={(e) => setPassword(e.target.value)}
                               className="mt-3 w-full bg-secondary border border-gray-200 rounded-lg px-3 py-2 text-sm text-black focus:outline-none focus:border-primary focus:ring-1 ring-primary/50"
@@ -321,23 +321,23 @@ export default function Home() {
                           )}>
                             <input type="checkbox" checked={isOneTime} onChange={(e) => setIsOneTime(e.target.checked)} className="mt-1 accent-red-500 w-4 h-4 cursor-pointer shrink-0" />
                             <div>
-                              <p className="text-sm font-bold flex items-center gap-1.5 text-foreground"><ShieldAlert className="w-4 h-4 text-red-500"/> Bombardowanie pliku</p>
-                              <p className="text-xs text-gray-500 mt-1 font-medium">Zablokuje podgląd wideo. Usunie natychmiast po 1 pobraniu.</p>
+                              <p className="text-sm font-bold flex items-center gap-1.5 text-foreground"><ShieldAlert className="w-4 h-4 text-red-500"/> {dict.home.bombFile}</p>
+                              <p className="text-xs text-gray-500 mt-1 font-medium">{dict.home.bombFileExt}</p>
                             </div>
                           </label>
 
                           <div className="flex flex-col gap-3 p-4 rounded-xl border-2 border-gray-200 bg-white transition-all">
                             <div className="flex items-center gap-2 text-foreground font-bold text-sm mb-1">
                               <Clock className="w-4 h-4 text-gray-500" />
-                              Kiedy plik ma zginąć?
+                              {dict.home.whenFileDie}
                             </div>
                             
                             <div className="grid grid-cols-2 gap-2">
                               {[
-                                { l: '1 Godzina', v: 1 }, 
-                                { l: '24 Godziny', v: 24 }, 
-                                { l: '7 Dni', v: 168 }, 
-                                { l: 'Nigdy', v: 0 }
+                                { l: dict.home.expires1Hour, v: 1 }, 
+                                { l: dict.home.expires24Hours, v: 24 }, 
+                                { l: dict.home.expires7Days, v: 168 }, 
+                                { l: dict.home.expiresNever, v: 0 }
                               ].map(opt => (
                                 <button
                                   key={opt.v}
@@ -359,7 +359,7 @@ export default function Home() {
                       </div>
 
                       <button onClick={handleUpload} className="w-full mt-4 py-4 rounded-xl font-bold text-white text-lg bg-primary hover:bg-[#e66000] focus:ring-4 focus:ring-primary/30 transition-all shadow-lg active:scale-[0.98]">
-                        Wgraj plik
+                        {dict.home.uploadBtnAction}
                       </button>
                     </motion.div>
                   )}

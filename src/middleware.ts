@@ -5,15 +5,15 @@ const locales = ['en', 'pl']
 const defaultLocale = 'en'
 
 function getLocale(request: NextRequest): string {
-  // Sprawdzenie flagi Vercel (Geolokalizacja po IP)
   const country = request.headers.get('x-vercel-ip-country')
-  if (country === 'PL') return 'pl'
   
-  // Jeśli na localhoscie lub brak geolokalizacji z Vercel, próbujemy ustawienia przeglądarki
+  if (country) {
+    return country === 'PL' ? 'pl' : 'en'
+  }
+  
   const acceptLang = request.headers.get('accept-language') || ''
   if (acceptLang.includes('pl')) return 'pl'
 
-  // W innym wypadku, cały świat ładuje angielski
   return 'en'
 }
 
