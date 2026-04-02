@@ -320,7 +320,7 @@ export default function Home() {
                   </div>
                   <div className="text-center">
                     <p className="text-base font-extrabold text-white">{files.length} plików wybranych</p>
-                    <p className="text-xs text-slate-400 mt-0.5">Zostaną spakowane w ZIP przed wyslaniem</p>
+                    <p className="text-xs text-slate-400 mt-0.5">Zostaną spakowane w ZIP przed wysłaniem</p>
                   </div>
                   <div className="w-full max-h-32 overflow-y-auto space-y-1.5 pr-1">
                     {files.map((f, i) => (
@@ -331,9 +331,57 @@ export default function Home() {
                       </div>
                     ))}
                   </div>
-                  <button onClick={() => setFiles([])} className="text-xs text-slate-500 hover:text-white flex items-center gap-1 transition-colors">
-                    <X className="w-3.5 h-3.5" /> Wyczyść wybrane pliki
-                  </button>
+                  {!isUploading && (
+                    <button onClick={() => setFiles([])} className="text-xs text-slate-500 hover:text-white flex items-center gap-1 transition-colors">
+                      <X className="w-3.5 h-3.5" /> Wyczyść wybrane pliki
+                    </button>
+                  )}
+                  {isUploading && (
+                    <div className="w-full">
+                      <div className="w-full bg-white/5 rounded-full h-2 overflow-hidden border border-white/10">
+                        <motion.div className="h-full bg-primary rounded-full" animate={{ width: `${progress}%` }} transition={{ ease: "linear", duration: 0.2 }} />
+                      </div>
+                      <p className="text-center text-sm text-slate-400 mt-2 font-bold">
+                        {progress < 50 ? `Pakowanie ZIP... ${Math.round(progress * 2)}%` : `Wysyłanie... ${Math.round((progress - 50) * 2)}%`}
+                      </p>
+                    </div>
+                  )}
+                  {!isUploading && (
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="w-full space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                        <label className={cn("flex flex-col gap-2 p-4 rounded-xl border-2 transition-all cursor-pointer h-full", hasPassword ? "border-primary bg-primary/10" : "border-white/10 bg-white/5 hover:border-white/20")}>
+                          <div className="flex items-start gap-3">
+                            <input type="checkbox" checked={hasPassword} onChange={(e) => setHasPassword(e.target.checked)} className="mt-1 accent-primary w-4 h-4 cursor-pointer" />
+                            <div>
+                              <p className="text-sm font-bold flex items-center gap-1.5 text-white"><Lock className="w-4 h-4 text-slate-400" /> {dict.home.secureWithPassword}</p>
+                              <p className="text-xs text-slate-400 mt-1 font-medium">{dict.home.passwordRequiredExt}</p>
+                            </div>
+                          </div>
+                          {hasPassword && <input type="password" placeholder={dict.home.inputPasswordStrong} value={password} onChange={(e) => setPassword(e.target.value)} className="mt-3 w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 ring-primary/50" />}
+                        </label>
+                        <div className="flex flex-col gap-4">
+                          <label className={cn("flex items-start gap-3 p-4 rounded-xl border-2 transition-all cursor-pointer", isOneTime ? "border-red-500 bg-red-500/10" : "border-white/10 bg-white/5 hover:border-white/20")}>
+                            <input type="checkbox" checked={isOneTime} onChange={(e) => setIsOneTime(e.target.checked)} className="mt-1 accent-red-500 w-4 h-4 cursor-pointer shrink-0" />
+                            <div>
+                              <p className="text-sm font-bold flex items-center gap-1.5 text-white"><ShieldAlert className="w-4 h-4 text-red-500" /> {dict.home.bombFile}</p>
+                              <p className="text-xs text-slate-400 mt-1 font-medium">{dict.home.bombFileExt}</p>
+                            </div>
+                          </label>
+                          <div className="flex flex-col gap-3 p-4 rounded-xl border-2 border-white/10 bg-white/5">
+                            <div className="flex items-center gap-2 text-white font-bold text-sm mb-1"><Clock className="w-4 h-4 text-slate-500" /> {dict.home.whenFileDie}</div>
+                            <div className="grid grid-cols-2 gap-2">
+                              {[{ l: dict.home.expires1Hour, v: 1 }, { l: dict.home.expires24Hours, v: 24 }, { l: dict.home.expires7Days, v: 168 }, { l: dict.home.expiresNever, v: 0 }].map(opt => (
+                                <button key={opt.v} onClick={(e) => { e.preventDefault(); setExpiresInHours(opt.v); }} className={cn("py-2.5 px-2 rounded-lg text-xs font-bold transition-all border outline-none", expiresInHours === opt.v ? "bg-primary border-primary text-white shadow-md shadow-primary/30" : "bg-white/5 border-white/10 hover:bg-white/10 text-slate-400")}>{opt.l}</button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <button onClick={handleUpload} className="w-full py-4 rounded-xl font-bold text-white text-lg bg-primary hover:bg-emerald-600 focus:ring-4 focus:ring-primary/30 transition-all shadow-lg shadow-primary/20 active:scale-[0.98]">
+                        {dict.home.uploadBtnAction}
+                      </button>
+                    </motion.div>
+                  )}
                 </motion.div>
               ) : (
                 <motion.div
