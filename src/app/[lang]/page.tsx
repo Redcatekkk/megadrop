@@ -9,6 +9,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import AdSpace from "@/components/AdSpace";
 import { useI18n } from "@/components/I18nProvider";
+import { HeroGeometric } from "@/components/ui/shape-landing-hero";
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -72,12 +73,32 @@ export default function Home() {
     }
 
     try {
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const key = await crypto.subtle.generateKey(
+        { name: 'AES-GCM', length: 256 },
+        true,
+        ['encrypt']
+      );
+      
+      const fileBuffer = await uploadFile!.arrayBuffer();
+      const encryptedBuffer = await crypto.subtle.encrypt(
+        { name: "AES-GCM", iv: iv },
+        key,
+        fileBuffer
+      );
+
+      const finalBuffer = new Uint8Array(iv.length + encryptedBuffer.byteLength);
+      finalBuffer.set(iv, 0);
+      finalBuffer.set(new Uint8Array(encryptedBuffer), iv.length);
+
+      const encryptedBlob = new Blob([finalBuffer], { type: uploadFile!.type || "application/octet-stream" });
+
       const res = await fetch("/api/upload/init", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           filename: uploadFile!.name,
-          sizeBytes: uploadFile!.size,
+          sizeBytes: encryptedBlob.size,
           mimeType: uploadFile!.type,
           isOneTime,
           hasPassword,
@@ -109,10 +130,19 @@ export default function Home() {
         }
       };
 
-      xhr.onload = () => {
+      xhr.onerror = () => {
+        alert(dict.home.netError);
+        setIsUploading(false);
+      };
+
+      xhr.onload = async () => {
         if (xhr.status === 200 || xhr.status === 201) {
           setIsUploading(false);
-          const link = `${window.location.origin}/f/${data.fileId}`;
+          const exportedKey = await crypto.subtle.exportKey('raw', key);
+          const keyBase64 = btoa(String.fromCharCode(...new Uint8Array(exportedKey)));
+          const match = window.location.pathname.match(/^\/(en|pl)/);
+          const langPrefix = match ? match[0] : '';
+          const link = `${window.location.origin}${langPrefix}/f/${data.fileId}#${keyBase64}`;
           setDownloadLink(link);
           setFiles([]);
         } else {
@@ -121,12 +151,7 @@ export default function Home() {
         }
       };
 
-      xhr.onerror = () => {
-        alert(dict.home.netError);
-        setIsUploading(false);
-      };
-
-      xhr.send(file);
+      xhr.send(encryptedBlob);
     } catch (error) {
       console.error(error);
       setIsUploading(false);
@@ -160,42 +185,12 @@ export default function Home() {
   }
 
   return (
-    <main className="w-full flex-1 flex flex-col lg:flex-row items-center lg:items-center justify-center max-w-7xl mx-auto p-6 md:p-12 min-h-screen gap-12 lg:gap-24 pt-24 lg:pt-0 relative">
-      
-      {/* LEWA KOLUMNA: Marketingowa */}
-      <div className="z-10 w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left space-y-8">
-        <motion.div 
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/20 bg-primary/10 text-primary text-sm font-bold mb-2 shadow-sm"
-        >
-          <Zap className="w-4 h-4 fill-primary" />
-          <span>{dict.home.heroBadge}</span>
-        </motion.div>
-        
-        <motion.h1 
-          initial={{ opacity: 0, y: -5 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-tight"
-        >
-          {dict.home.heroTitle1} <br className="hidden md:block" /> {dict.home.heroTitle2} <br className="hidden lg:block"/>
-          <span className="text-gradient block mt-1">{dict.home.heroTitleHighlight}</span>
-        </motion.h1>
-        
-        <motion.p 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="text-slate-400 text-lg max-w-xl font-medium leading-relaxed"
-        >
-          {dict.home.heroDesc}
-        </motion.p>
-
-        <div className="w-full mt-4 hidden lg:block">
-          <AdSpace dataAdSlot="upload_home_left" />
-        </div>
-      </div>
+    <HeroGeometric 
+       badge={dict.home.heroBadge}
+       title1={dict.home.heroTitle1 + " " + dict.home.heroTitle2}
+       title2={dict.home.heroTitleHighlight}
+    >
+      <div className="w-full flex justify-center mt-12 z-20">
 
       {/* PRAWA KOLUMNA: Interfejs Uploadu */}
       <div className="z-10 w-full lg:w-1/2 max-w-xl flex flex-col space-y-6">
@@ -347,37 +342,73 @@ export default function Home() {
                     </div>
                   )}
                   {!isUploading && (
-                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="w-full space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-                        <label className={cn("flex flex-col gap-2 p-4 rounded-xl border-2 transition-all cursor-pointer h-full", hasPassword ? "border-primary bg-primary/10" : "border-white/10 bg-white/5 hover:border-white/20")}>
-                          <div className="flex items-start gap-3">
-                            <input type="checkbox" checked={hasPassword} onChange={(e) => setHasPassword(e.target.checked)} className="mt-1 accent-primary w-4 h-4 cursor-pointer" />
-                            <div>
-                              <p className="text-sm font-bold flex items-center gap-1.5 text-white"><Lock className="w-4 h-4 text-slate-400" /> {dict.home.secureWithPassword}</p>
-                              <p className="text-xs text-slate-400 mt-1 font-medium">{dict.home.passwordRequiredExt}</p>
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="w-full space-y-3 mt-4">
+                      {/* Premium List Layout */}
+                      <div className="flex flex-col gap-2 w-full">
+                        
+                        {/* Zabezpiecz hasłem */}
+                        <div className={cn("flex flex-col p-4 rounded-2xl border transition-all duration-300", hasPassword ? "bg-primary/5 border-primary/30 shadow-sm shadow-primary/5" : "bg-white/5 border-white/5 hover:border-white/10")}>
+                          <label className="flex items-center justify-between cursor-pointer w-full">
+                            <div className="flex items-center gap-4">
+                              <div className={cn("p-2.5 rounded-xl transition-colors", hasPassword ? "bg-primary/20 text-primary" : "bg-white/10 text-slate-400")}>
+                                <Lock className="w-5 h-5" />
+                              </div>
+                              <div className="text-left">
+                                <p className="text-sm font-bold text-white leading-none">{dict.home.secureWithPassword}</p>
+                                <p className="text-xs text-slate-400 mt-1.5 font-medium">{dict.home.passwordRequiredExt}</p>
+                              </div>
                             </div>
-                          </div>
-                          {hasPassword && <input type="password" placeholder={dict.home.inputPasswordStrong} value={password} onChange={(e) => setPassword(e.target.value)} className="mt-3 w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 ring-primary/50" />}
-                        </label>
-                        <div className="flex flex-col gap-4">
-                          <label className={cn("flex items-start gap-3 p-4 rounded-xl border-2 transition-all cursor-pointer", isOneTime ? "border-red-500 bg-red-500/10" : "border-white/10 bg-white/5 hover:border-white/20")}>
-                            <input type="checkbox" checked={isOneTime} onChange={(e) => setIsOneTime(e.target.checked)} className="mt-1 accent-red-500 w-4 h-4 cursor-pointer shrink-0" />
-                            <div>
-                              <p className="text-sm font-bold flex items-center gap-1.5 text-white"><ShieldAlert className="w-4 h-4 text-red-500" /> {dict.home.bombFile}</p>
-                              <p className="text-xs text-slate-400 mt-1 font-medium">{dict.home.bombFileExt}</p>
+                            <div className={cn("w-11 h-6 flex items-center rounded-full p-1 transition-colors duration-300 cursor-pointer shrink-0 ml-4", hasPassword ? "bg-primary" : "bg-white/20")}>
+                               <div className={cn("bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300", hasPassword ? "translate-x-5" : "translate-x-0")} />
                             </div>
+                            <input type="checkbox" className="hidden" checked={hasPassword} onChange={(e) => setHasPassword(e.target.checked)} />
                           </label>
-                          <div className="flex flex-col gap-3 p-4 rounded-xl border-2 border-white/10 bg-white/5">
-                            <div className="flex items-center gap-2 text-white font-bold text-sm mb-1"><Clock className="w-4 h-4 text-slate-500" /> {dict.home.whenFileDie}</div>
-                            <div className="grid grid-cols-2 gap-2">
-                              {[{ l: dict.home.expires1Hour, v: 1 }, { l: dict.home.expires24Hours, v: 24 }, { l: dict.home.expires7Days, v: 168 }, { l: dict.home.expiresNever, v: 0 }].map(opt => (
-                                <button key={opt.v} onClick={(e) => { e.preventDefault(); setExpiresInHours(opt.v); }} className={cn("py-2.5 px-2 rounded-lg text-xs font-bold transition-all border outline-none", expiresInHours === opt.v ? "bg-primary border-primary text-white shadow-md shadow-primary/30" : "bg-white/5 border-white/10 hover:bg-white/10 text-slate-400")}>{opt.l}</button>
-                              ))}
+                          <AnimatePresence>
+                            {hasPassword && (
+                              <motion.div initial={{ height: 0, opacity: 0, marginTop: 0 }} animate={{ height: "auto", opacity: 1, marginTop: 16 }} exit={{ height: 0, opacity: 0, marginTop: 0 }} className="overflow-hidden">
+                                <input type="password" placeholder={dict.home.inputPasswordStrong} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full bg-black/40 border border-primary/20 rounded-xl px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 ring-primary/50 shadow-inner" />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+
+                        {/* Bezpieczne usunięcie po 1 pobraniu / Bomb */}
+                        <label className={cn("flex items-center justify-between p-4 rounded-2xl border transition-all duration-300 cursor-pointer", isOneTime ? "bg-red-500/5 border-red-500/30 shadow-sm shadow-red-500/5" : "bg-white/5 border-white/5 hover:border-white/10")}>
+                          <div className="flex items-center gap-4 w-3/4">
+                            <div className={cn("p-2.5 rounded-xl transition-colors shrink-0", isOneTime ? "bg-red-500/20 text-red-500" : "bg-white/10 text-slate-400")}>
+                              <ShieldAlert className="w-5 h-5" />
+                            </div>
+                            <div className="text-left w-full pr-2">
+                              <p className="text-sm font-bold text-white leading-none">{dict.home.bombFile}</p>
+                              <p className="text-xs text-slate-400 mt-1.5 font-medium leading-tight">{dict.home.bombFileExt}</p>
                             </div>
                           </div>
+                          <div className={cn("w-11 h-6 flex items-center rounded-full p-1 transition-colors duration-300 shrink-0", isOneTime ? "bg-red-500" : "bg-white/20")}>
+                             <div className={cn("bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300", isOneTime ? "translate-x-5" : "translate-x-0")} />
+                          </div>
+                          <input type="checkbox" className="hidden" checked={isOneTime} onChange={(e) => setIsOneTime(e.target.checked)} />
+                        </label>
+
+                        {/* Wygasanie pliku */}
+                        <div className="flex flex-col items-start gap-4 p-4 rounded-2xl border border-white/5 bg-white/5 mt-1">
+                           <div className="flex items-center gap-4 w-full">
+                              <div className="p-2.5 rounded-xl bg-white/10 text-slate-400">
+                                <Clock className="w-5 h-5" />
+                              </div>
+                              <div className="text-left flex-1">
+                                <p className="text-sm font-bold text-white leading-none">{dict.home.whenFileDie}</p>
+                              </div>
+                           </div>
+                           <div className="flex w-full gap-2">
+                              {[{ l: dict.home.expires1Hour, v: 1 }, { l: dict.home.expires24Hours, v: 24 }, { l: dict.home.expires7Days, v: 168 }, { l: dict.home.expiresNever, v: 0 }].map(opt => (
+                                <button key={opt.v} onClick={(e) => { e.preventDefault(); setExpiresInHours(opt.v); }} className={cn("flex-1 py-2.5 px-1 rounded-xl text-xs font-extrabold transition-all border outline-none", expiresInHours === opt.v ? "bg-primary/20 border-primary text-primary shadow-sm" : "bg-black/30 border-white/5 hover:border-white/20 text-slate-400 hover:text-white")}>{opt.l}</button>
+                              ))}
+                           </div>
                         </div>
+
                       </div>
-                      <button onClick={handleUpload} className="w-full py-4 rounded-xl font-bold text-white text-lg bg-primary hover:bg-emerald-600 focus:ring-4 focus:ring-primary/30 transition-all shadow-lg shadow-primary/20 active:scale-[0.98]">
+                      
+                      <button onClick={handleUpload} className="w-full mt-6 py-4 rounded-xl font-bold text-white text-lg bg-primary hover:bg-emerald-600 tracking-wide focus:ring-4 focus:ring-primary/30 transition-all shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-[0.98]">
                         {dict.home.uploadBtnAction}
                       </button>
                     </motion.div>
@@ -432,82 +463,72 @@ export default function Home() {
                   </div>
 
                   {!isUploading && (
-                    <motion.div 
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.1 }}
-                      className="w-full mt-6 space-y-4"
-                    >
-                      {/* Opcje przesyłania (Zabezpieczenie & Czas) */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="w-full mt-6 space-y-3">
+                      {/* Premium List Layout */}
+                      <div className="flex flex-col gap-2 w-full">
                         
-                        <label className={cn(
-                          "flex flex-col gap-2 p-4 rounded-xl border-2 transition-all cursor-pointer h-full", 
-                          hasPassword ? "border-primary bg-primary/10" : "border-white/10 bg-white/5 hover:border-white/20"
-                        )}>
-                          <div className="flex items-start gap-3">
-                            <input type="checkbox" checked={hasPassword} onChange={(e) => setHasPassword(e.target.checked)} className="mt-1 accent-primary w-4 h-4 cursor-pointer" />
-                            <div>
-                              <p className="text-sm font-bold flex items-center gap-1.5 text-white"><Lock className="w-4 h-4 text-slate-400"/> {dict.home.secureWithPassword}</p>
-                              <p className="text-xs text-slate-400 mt-1 font-medium">{dict.home.passwordRequiredExt}</p>
+                        {/* Zabezpiecz hasłem */}
+                        <div className={cn("flex flex-col p-4 rounded-2xl border transition-all duration-300", hasPassword ? "bg-primary/5 border-primary/30 shadow-sm shadow-primary/5" : "bg-white/5 border-white/5 hover:border-white/10")}>
+                          <label className="flex items-center justify-between cursor-pointer w-full">
+                            <div className="flex items-center gap-4">
+                              <div className={cn("p-2.5 rounded-xl transition-colors", hasPassword ? "bg-primary/20 text-primary" : "bg-white/10 text-slate-400")}>
+                                <Lock className="w-5 h-5" />
+                              </div>
+                              <div className="text-left">
+                                <p className="text-sm font-bold text-white leading-none">{dict.home.secureWithPassword}</p>
+                                <p className="text-xs text-slate-400 mt-1.5 font-medium">{dict.home.passwordRequiredExt}</p>
+                              </div>
+                            </div>
+                            <div className={cn("w-11 h-6 flex items-center rounded-full p-1 transition-colors duration-300 cursor-pointer shrink-0 ml-4", hasPassword ? "bg-primary" : "bg-white/20")}>
+                               <div className={cn("bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300", hasPassword ? "translate-x-5" : "translate-x-0")} />
+                            </div>
+                            <input type="checkbox" className="hidden" checked={hasPassword} onChange={(e) => setHasPassword(e.target.checked)} />
+                          </label>
+                          <AnimatePresence>
+                            {hasPassword && (
+                              <motion.div initial={{ height: 0, opacity: 0, marginTop: 0 }} animate={{ height: "auto", opacity: 1, marginTop: 16 }} exit={{ height: 0, opacity: 0, marginTop: 0 }} className="overflow-hidden">
+                                <input type="password" placeholder={dict.home.inputPasswordStrong} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full bg-black/40 border border-primary/20 rounded-xl px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 ring-primary/50 shadow-inner" />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+
+                        {/* Bezpieczne usunięcie po 1 pobraniu / Bomb */}
+                        <label className={cn("flex items-center justify-between p-4 rounded-2xl border transition-all duration-300 cursor-pointer", isOneTime ? "bg-red-500/5 border-red-500/30 shadow-sm shadow-red-500/5" : "bg-white/5 border-white/5 hover:border-white/10")}>
+                          <div className="flex items-center gap-4 w-3/4">
+                            <div className={cn("p-2.5 rounded-xl transition-colors shrink-0", isOneTime ? "bg-red-500/20 text-red-500" : "bg-white/10 text-slate-400")}>
+                              <ShieldAlert className="w-5 h-5" />
+                            </div>
+                            <div className="text-left w-full pr-2">
+                              <p className="text-sm font-bold text-white leading-none">{dict.home.bombFile}</p>
+                              <p className="text-xs text-slate-400 mt-1.5 font-medium leading-tight">{dict.home.bombFileExt}</p>
                             </div>
                           </div>
-                          {hasPassword && (
-                            <input 
-                              type="password" 
-                              placeholder={dict.home.inputPasswordStrong} 
-                              value={password}
-                              onChange={(e) => setPassword(e.target.value)}
-                              className="mt-3 w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 ring-primary/50"
-                            />
-                          )}
+                          <div className={cn("w-11 h-6 flex items-center rounded-full p-1 transition-colors duration-300 shrink-0", isOneTime ? "bg-red-500" : "bg-white/20")}>
+                             <div className={cn("bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300", isOneTime ? "translate-x-5" : "translate-x-0")} />
+                          </div>
+                          <input type="checkbox" className="hidden" checked={isOneTime} onChange={(e) => setIsOneTime(e.target.checked)} />
                         </label>
 
-                        <div className="flex flex-col gap-4">
-                          <label className={cn(
-                            "flex items-start gap-3 p-4 rounded-xl border-2 transition-all cursor-pointer", 
-                            isOneTime ? "border-red-500 bg-red-500/10" : "border-white/10 bg-white/5 hover:border-white/20"
-                          )}>
-                            <input type="checkbox" checked={isOneTime} onChange={(e) => setIsOneTime(e.target.checked)} className="mt-1 accent-red-500 w-4 h-4 cursor-pointer shrink-0" />
-                            <div>
-                              <p className="text-sm font-bold flex items-center gap-1.5 text-white"><ShieldAlert className="w-4 h-4 text-red-500"/> {dict.home.bombFile}</p>
-                              <p className="text-xs text-slate-400 mt-1 font-medium">{dict.home.bombFileExt}</p>
-                            </div>
-                          </label>
-
-                          <div className="flex flex-col gap-3 p-4 rounded-xl border-2 border-white/10 bg-white/5 transition-all">
-                            <div className="flex items-center gap-2 text-white font-bold text-sm mb-1">
-                              <Clock className="w-4 h-4 text-slate-500" />
-                              {dict.home.whenFileDie}
-                            </div>
-                            
-                            <div className="grid grid-cols-2 gap-2">
-                              {[
-                                { l: dict.home.expires1Hour, v: 1 }, 
-                                { l: dict.home.expires24Hours, v: 24 }, 
-                                { l: dict.home.expires7Days, v: 168 }, 
-                                { l: dict.home.expiresNever, v: 0 }
-                              ].map(opt => (
-                                <button
-                                  key={opt.v}
-                                  onClick={(e) => { e.preventDefault(); setExpiresInHours(opt.v); }}
-                                  className={cn(
-                                    "py-2.5 px-2 rounded-lg text-xs font-bold transition-all border outline-none",
-                                    expiresInHours === opt.v 
-                                      ? "bg-primary border-primary text-white shadow-md shadow-primary/30 scale-[1.02]" 
-                                      : "bg-white/5 border-white/10 hover:bg-white/10 text-slate-400 hover:border-white/20"
-                                  )}
-                                >
-                                  {opt.l}
-                                </button>
+                        {/* Wygasanie pliku */}
+                        <div className="flex flex-col items-start gap-4 p-4 rounded-2xl border border-white/5 bg-white/5 mt-1">
+                           <div className="flex items-center gap-4 w-full">
+                              <div className="p-2.5 rounded-xl bg-white/10 text-slate-400">
+                                <Clock className="w-5 h-5" />
+                              </div>
+                              <div className="text-left flex-1">
+                                <p className="text-sm font-bold text-white leading-none">{dict.home.whenFileDie}</p>
+                              </div>
+                           </div>
+                           <div className="flex w-full gap-2">
+                              {[{ l: dict.home.expires1Hour, v: 1 }, { l: dict.home.expires24Hours, v: 24 }, { l: dict.home.expires7Days, v: 168 }, { l: dict.home.expiresNever, v: 0 }].map(opt => (
+                                <button key={opt.v} onClick={(e) => { e.preventDefault(); setExpiresInHours(opt.v); }} className={cn("flex-1 py-2.5 px-1 rounded-xl text-xs font-extrabold transition-all border outline-none", expiresInHours === opt.v ? "bg-primary/20 border-primary text-primary shadow-sm" : "bg-black/30 border-white/5 hover:border-white/20 text-slate-400 hover:text-white")}>{opt.l}</button>
                               ))}
-                            </div>
-                          </div>
+                           </div>
                         </div>
 
                       </div>
-
-                      <button onClick={handleUpload} className="w-full mt-4 py-4 rounded-xl font-bold text-white text-lg bg-primary hover:bg-emerald-600 focus:ring-4 focus:ring-primary/30 transition-all shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-[0.98]">
+                      <button onClick={handleUpload} className="w-full mt-6 py-4 rounded-xl font-bold text-white text-lg bg-primary hover:bg-emerald-600 tracking-wide focus:ring-4 focus:ring-primary/30 transition-all shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-[0.98]">
                         {dict.home.uploadBtnAction}
                       </button>
                     </motion.div>
@@ -518,11 +539,8 @@ export default function Home() {
           </div>
         </motion.div>
 
-        {/* AdSpace na mobile (pod panelem), na desktop schowany bo jest z lewej */}
-        <div className="w-full lg:hidden block">
-          <AdSpace dataAdSlot="upload_home_bottom" />
         </div>
       </div>
-    </main>
+    </HeroGeometric>
   );
 }

@@ -85,7 +85,7 @@ export default async function DownloadPage(props: { params: Promise<{ id: string
   }
 
   return (
-    <main className="w-full flex-1 flex flex-col lg:flex-row items-center lg:items-center justify-center max-w-7xl mx-auto p-6 md:p-12 min-h-screen gap-12 lg:gap-24 pt-24 lg:pt-0 relative overflow-hidden">
+    <>
       <DownloadClientUI 
         id={id} 
         fileName={file.original_name} 
@@ -94,6 +94,6 @@ export default async function DownloadPage(props: { params: Promise<{ id: string
         isOneTime={file.max_downloads === 1}
         expiresAt={file.expires_at}
       />
-    </main>
+    </>
   );
 }
