@@ -63,10 +63,10 @@ export default function AdSpace({ dataAdSlot, className = "" }: { dataAdSlot?: s
 
   return (
     <div className={`w-full flex flex-col items-center justify-center glass-panel shadow-sm rounded-[2rem] p-4 min-h-[120px] overflow-hidden ${className}`}>
-      <span className="text-xs text-gray-400 font-bold mb-2 uppercase tracking-wider">{dict.adspace.sponsor}</span>
+      <span className="text-xs text-slate-500 font-bold mb-2 uppercase tracking-wider">{dict.adspace.sponsor}</span>
       <div className="w-full flex items-center justify-center relative min-h-[250px]">
         {/* Placeholder deweloperski widoczny na szaro jeśli AdSense nie wrzuci jeszcze iframe'a */}
-        <div className="absolute inset-0 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-xl text-gray-400 font-bold z-0 opacity-50 pointer-events-none">
+        <div className="absolute inset-0 flex items-center justify-center border-2 border-dashed border-white/10 rounded-xl text-slate-600 font-bold z-0 opacity-50 pointer-events-none">
            [ Miejsce na Google AdSense ]
         </div>
         <ins 

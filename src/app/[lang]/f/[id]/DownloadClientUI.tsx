@@ -125,7 +125,7 @@ export default function DownloadClientUI({ id, fileName, sizeBytes, hasPassword,
                 initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
                 className="glass-panel w-full p-8 md:p-12 rounded-[2rem] flex flex-col items-center relative"
               >
-                <div className="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mb-6 border border-blue-100 shadow-inner">
+                <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-6 border border-primary/20 shadow-inner shadow-primary/10">
                   <DownloadCloud className="w-10 h-10 text-primary" />
                 </div>
                 
@@ -134,7 +134,7 @@ export default function DownloadClientUI({ id, fileName, sizeBytes, hasPassword,
                 </h1>
             
             <div className="flex flex-wrap items-center justify-center gap-2.5 mb-10">
-              <p className="text-gray-600 font-bold bg-gray-100/80 border border-gray-200 px-4 py-1.5 rounded-full text-sm">
+              <p className="text-slate-300 font-bold bg-white/5 border border-white/10 px-4 py-1.5 rounded-full text-sm">
                 {formatSize(sizeBytes)}
               </p>
               
@@ -161,20 +161,20 @@ export default function DownloadClientUI({ id, fileName, sizeBytes, hasPassword,
                   placeholder={dict.download.passwordPlaceholder}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-white border-2 border-gray-200 rounded-xl py-4 pl-12 pr-4 text-black focus:outline-none focus:border-primary focus:ring-4 ring-primary/20 transition-all font-medium placeholder-gray-400"
+                  className="w-full bg-white/5 border-2 border-white/10 rounded-xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-primary focus:ring-4 ring-primary/20 transition-all font-medium placeholder-slate-500"
                 />
               </div>
             )}
 
             {error && (
-              <p className="text-red-600 text-sm font-bold mb-6 w-full text-center bg-red-50 border border-red-100 py-3 rounded-lg shadow-sm">{error}</p>
+              <p className="text-red-400 text-sm font-bold mb-6 w-full text-center bg-red-500/10 border border-red-500/20 py-3 rounded-lg shadow-sm">{error}</p>
             )}
 
             <div className="w-full flex flex-col gap-3">
               <button
                 onClick={() => handleAction('download')}
                 disabled={isProcessing}
-                className="w-full py-4 rounded-xl font-bold text-white text-lg bg-[#F97316] hover:bg-[#EA580C] transition-all shadow-xl shadow-[#F97316]/20 active:scale-95 disabled:opacity-50 disabled:scale-100 flex justify-center items-center gap-2"
+                className="w-full py-4 rounded-xl font-bold text-white text-lg bg-primary hover:bg-emerald-600 transition-all shadow-xl shadow-primary/20 active:scale-95 disabled:opacity-50 disabled:scale-100 flex justify-center items-center gap-2"
               >
                 {isProcessing ? dict.download.processing : dict.download.downloadBtn}
                 {!isProcessing && <DownloadCloud className="w-5 h-5"/>}
@@ -184,7 +184,7 @@ export default function DownloadClientUI({ id, fileName, sizeBytes, hasPassword,
                 <button
                   onClick={() => handleAction('preview')}
                   disabled={isProcessing}
-                  className="w-full py-3.5 rounded-xl font-bold text-gray-700 bg-gray-100 border border-gray-200 hover:bg-gray-200 transition-all active:scale-95 disabled:opacity-50 flex justify-center items-center gap-2"
+                  className="w-full py-3.5 rounded-xl font-bold text-slate-300 bg-white/5 border border-white/10 hover:bg-white/10 transition-all active:scale-95 disabled:opacity-50 flex justify-center items-center gap-2"
                 >
                   <Eye className="w-5 h-5"/> {dict.download.previewBtn}
                 </button>
@@ -195,7 +195,7 @@ export default function DownloadClientUI({ id, fileName, sizeBytes, hasPassword,
               <AdSpace dataAdSlot="glowne_miejsce_pobierania" />
             </div>
 
-            <p className="text-xs text-gray-400 font-medium text-center mt-6 px-4">
+            <p className="text-xs text-slate-500 font-medium text-center mt-6 px-4">
               {dict.download.tosText}
             </p>
               </motion.div>

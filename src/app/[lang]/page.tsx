@@ -152,7 +152,7 @@ export default function Home() {
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 leading-tight"
+          className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-tight"
         >
           {dict.home.heroTitle1} <br className="hidden md:block" /> {dict.home.heroTitle2} <br className="hidden lg:block"/>
           <span className="text-gradient block mt-1">{dict.home.heroTitleHighlight}</span>
@@ -162,7 +162,7 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="text-slate-600 text-lg max-w-xl font-medium leading-relaxed"
+          className="text-slate-400 text-lg max-w-xl font-medium leading-relaxed"
         >
           {dict.home.heroDesc}
         </motion.p>
@@ -206,7 +206,7 @@ export default function Home() {
                     <p className="text-gray-600 font-medium">{dict.home.copyHelperText}</p>
                   </div>
                   
-                  <div className="flex w-full overflow-hidden items-center pl-4 bg-secondary rounded-xl border border-gray-200 focus-within:border-primary focus-within:ring-2 ring-primary/20 transition-all">
+                  <div className="flex w-full overflow-hidden items-center pl-4 bg-white/5 rounded-xl border border-white/10 focus-within:border-primary focus-within:ring-2 ring-primary/20 transition-all">
                     <LinkIcon className="w-5 h-5 text-gray-500 shrink-0" />
                     <input 
                       readOnly 
@@ -217,14 +217,14 @@ export default function Home() {
                       onClick={copyToClipboard}
                       className={cn(
                         "h-full px-6 font-bold transition-colors m-1 rounded-lg",
-                        copied ? "bg-green-600 text-white" : "bg-primary text-white hover:bg-blue-700 hover:shadow-md hover:shadow-primary/20"
+                        copied ? "bg-green-600 text-white" : "bg-primary text-white hover:bg-emerald-600 hover:shadow-md hover:shadow-primary/20"
                       )}
                     >
                       {copied ? dict.home.copied : dict.home.copy}
                     </button>
                   </div>
 
-                  <button onClick={resetUpload} className="text-sm font-semibold text-gray-500 hover:text-black underline decoration-2 underline-offset-4 mt-2">
+                  <button onClick={resetUpload} className="text-sm font-semibold text-slate-400 hover:text-white underline decoration-2 underline-offset-4 mt-2">
                     {dict.home.uploadNext}
                   </button>
                 </motion.div>
@@ -255,7 +255,7 @@ export default function Home() {
                   className="flex flex-col items-center w-full z-20"
                 >
                   {/* KARTA PLIKU Z ENERGY BAREM */}
-                  <div className="flex items-center gap-4 w-full p-4 rounded-2xl bg-white border border-gray-200 shadow-sm relative overflow-hidden h-20">
+                  <div className="flex items-center gap-4 w-full p-4 rounded-2xl bg-white/5 border border-white/10 shadow-sm relative overflow-hidden h-20">
                     
                     {/* Energy Bar (Pasek Progresu) */}
                     <motion.div 
@@ -272,15 +272,15 @@ export default function Home() {
                       />
                     </motion.div>
 
-                    <div className="flex-shrink-0 p-3 bg-gray-100 rounded-xl relative z-10 transition-colors" style={isUploading ? { backgroundColor: 'white'} : {}}>
+                    <div className="flex-shrink-0 p-3 bg-white/10 rounded-xl relative z-10 transition-colors" style={isUploading ? { backgroundColor: 'rgba(255,255,255,0.08)'} : {}}>
                       <FileIcon className={cn("w-6 h-6", isUploading ? "text-primary" : "text-gray-500")} />
                     </div>
                     
                     <div className="flex-1 min-w-0 relative z-10">
-                      <p className={cn("text-sm font-bold truncate transition-colors", isUploading ? "text-slate-900 drop-shadow-sm font-extrabold" : "text-foreground")}>
+                      <p className={cn("text-sm font-bold truncate transition-colors", isUploading ? "text-white drop-shadow-sm font-extrabold" : "text-foreground")}>
                         {file.name}
                       </p>
-                      <p className={cn("text-xs mt-0.5 font-bold transition-colors", isUploading ? "text-slate-800 drop-shadow-sm" : "text-gray-500")}>
+                      <p className={cn("text-xs mt-0.5 font-bold transition-colors", isUploading ? "text-white/70 drop-shadow-sm" : "text-gray-400")}>
                         {isUploading ? `${dict.home.uploadingFile} ${progress}%` : formatFileSize(file.size)}
                       </p>
                     </div>
@@ -288,7 +288,7 @@ export default function Home() {
                     {!isUploading && (
                       <button 
                         onClick={() => setFile(null)}
-                        className="p-2 rounded-full hover:bg-gray-100 text-gray-400 hover:text-black transition-colors relative z-10"
+                        className="p-2 rounded-full hover:bg-white/10 text-gray-400 hover:text-white transition-colors relative z-10"
                       >
                         <X className="w-5 h-5" />
                       </button>
@@ -307,13 +307,13 @@ export default function Home() {
                         
                         <label className={cn(
                           "flex flex-col gap-2 p-4 rounded-xl border-2 transition-all cursor-pointer h-full", 
-                          hasPassword ? "border-primary bg-primary/5" : "border-gray-200 bg-white hover:border-gray-300"
+                          hasPassword ? "border-primary bg-primary/10" : "border-white/10 bg-white/5 hover:border-white/20"
                         )}>
                           <div className="flex items-start gap-3">
                             <input type="checkbox" checked={hasPassword} onChange={(e) => setHasPassword(e.target.checked)} className="mt-1 accent-primary w-4 h-4 cursor-pointer" />
                             <div>
-                              <p className="text-sm font-bold flex items-center gap-1.5 text-foreground"><Lock className="w-4 h-4 text-gray-600"/> {dict.home.secureWithPassword}</p>
-                              <p className="text-xs text-gray-500 mt-1 font-medium">{dict.home.passwordRequiredExt}</p>
+                              <p className="text-sm font-bold flex items-center gap-1.5 text-white"><Lock className="w-4 h-4 text-slate-400"/> {dict.home.secureWithPassword}</p>
+                              <p className="text-xs text-slate-400 mt-1 font-medium">{dict.home.passwordRequiredExt}</p>
                             </div>
                           </div>
                           {hasPassword && (
@@ -322,7 +322,7 @@ export default function Home() {
                               placeholder={dict.home.inputPasswordStrong} 
                               value={password}
                               onChange={(e) => setPassword(e.target.value)}
-                              className="mt-3 w-full bg-secondary border border-gray-200 rounded-lg px-3 py-2 text-sm text-black focus:outline-none focus:border-primary focus:ring-1 ring-primary/50"
+                              className="mt-3 w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 ring-primary/50"
                             />
                           )}
                         </label>
@@ -330,18 +330,18 @@ export default function Home() {
                         <div className="flex flex-col gap-4">
                           <label className={cn(
                             "flex items-start gap-3 p-4 rounded-xl border-2 transition-all cursor-pointer", 
-                            isOneTime ? "border-red-500 bg-red-50" : "border-gray-200 bg-white hover:border-gray-300"
+                            isOneTime ? "border-red-500 bg-red-500/10" : "border-white/10 bg-white/5 hover:border-white/20"
                           )}>
                             <input type="checkbox" checked={isOneTime} onChange={(e) => setIsOneTime(e.target.checked)} className="mt-1 accent-red-500 w-4 h-4 cursor-pointer shrink-0" />
                             <div>
-                              <p className="text-sm font-bold flex items-center gap-1.5 text-foreground"><ShieldAlert className="w-4 h-4 text-red-500"/> {dict.home.bombFile}</p>
-                              <p className="text-xs text-gray-500 mt-1 font-medium">{dict.home.bombFileExt}</p>
+                              <p className="text-sm font-bold flex items-center gap-1.5 text-white"><ShieldAlert className="w-4 h-4 text-red-500"/> {dict.home.bombFile}</p>
+                              <p className="text-xs text-slate-400 mt-1 font-medium">{dict.home.bombFileExt}</p>
                             </div>
                           </label>
 
-                          <div className="flex flex-col gap-3 p-4 rounded-xl border-2 border-gray-200 bg-white transition-all">
-                            <div className="flex items-center gap-2 text-foreground font-bold text-sm mb-1">
-                              <Clock className="w-4 h-4 text-gray-500" />
+                          <div className="flex flex-col gap-3 p-4 rounded-xl border-2 border-white/10 bg-white/5 transition-all">
+                            <div className="flex items-center gap-2 text-white font-bold text-sm mb-1">
+                              <Clock className="w-4 h-4 text-slate-500" />
                               {dict.home.whenFileDie}
                             </div>
                             
@@ -359,7 +359,7 @@ export default function Home() {
                                     "py-2.5 px-2 rounded-lg text-xs font-bold transition-all border outline-none",
                                     expiresInHours === opt.v 
                                       ? "bg-primary border-primary text-white shadow-md shadow-primary/30 scale-[1.02]" 
-                                      : "bg-gray-50 border-gray-200 hover:bg-gray-100 text-gray-600 hover:border-gray-300"
+                                      : "bg-white/5 border-white/10 hover:bg-white/10 text-slate-400 hover:border-white/20"
                                   )}
                                 >
                                   {opt.l}
@@ -371,7 +371,7 @@ export default function Home() {
 
                       </div>
 
-                      <button onClick={handleUpload} className="w-full mt-4 py-4 rounded-xl font-bold text-white text-lg bg-[#F97316] hover:bg-[#EA580C] focus:ring-4 focus:ring-[#F97316]/30 transition-all shadow-lg hover:shadow-[#F97316]/20 active:scale-[0.98]">
+                      <button onClick={handleUpload} className="w-full mt-4 py-4 rounded-xl font-bold text-white text-lg bg-primary hover:bg-emerald-600 focus:ring-4 focus:ring-primary/30 transition-all shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-[0.98]">
                         {dict.home.uploadBtnAction}
                       </button>
                     </motion.div>

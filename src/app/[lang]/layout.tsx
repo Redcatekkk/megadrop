@@ -47,7 +47,7 @@ export default async function RootLayout({
       <head>
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5365099957491511" crossOrigin="anonymous"></script>
       </head>
-      <body className="min-h-full flex flex-col relative text-black">
+      <body className="min-h-full flex flex-col relative">
         <I18nProvider dictionary={dict}>
           <header className="absolute top-6 left-6 md:top-8 md:left-8 z-50">
             <Link href={`/${lang}`} className="flex items-center gap-2.5 font-black text-2xl tracking-tight text-foreground hover:opacity-80 transition-opacity group">
