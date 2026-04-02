@@ -88,12 +88,12 @@ export default function DownloadClientUI({ id, fileName, sizeBytes, hasPassword,
     <motion.div 
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="glass-panel w-full max-w-xl p-8 md:p-12 rounded-[2rem] flex flex-col items-center relative z-10 bg-white"
+      className="glass-panel w-full max-w-xl p-8 md:p-12 rounded-[2rem] flex flex-col items-center relative z-10"
     >
       <AnimatePresence mode="wait">
         {!previewData ? (
           <motion.div key="main" className="w-full flex flex-col items-center" exit={{ opacity: 0, scale: 0.95 }}>
-            <div className="w-24 h-24 bg-orange-50 rounded-full flex items-center justify-center mb-6 border border-orange-100 shadow-inner">
+            <div className="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mb-6 border border-blue-100 shadow-inner">
               <DownloadCloud className="w-10 h-10 text-primary" />
             </div>
             
@@ -142,7 +142,7 @@ export default function DownloadClientUI({ id, fileName, sizeBytes, hasPassword,
               <button
                 onClick={() => handleAction('download')}
                 disabled={isProcessing}
-                className="w-full py-4 rounded-xl font-bold text-white text-lg bg-primary hover:bg-[#e66000] transition-all shadow-xl shadow-primary/25 active:scale-95 disabled:opacity-50 disabled:scale-100 flex justify-center items-center gap-2"
+                className="w-full py-4 rounded-xl font-bold text-white text-lg bg-[#F97316] hover:bg-[#EA580C] transition-all shadow-xl shadow-[#F97316]/20 active:scale-95 disabled:opacity-50 disabled:scale-100 flex justify-center items-center gap-2"
               >
                 {isProcessing ? dict.download.processing : dict.download.downloadBtn}
                 {!isProcessing && <DownloadCloud className="w-5 h-5"/>}
@@ -180,7 +180,7 @@ export default function DownloadClientUI({ id, fileName, sizeBytes, hasPassword,
                  </button>
                  <button 
                    onClick={() => window.location.href = previewData.dlUrl}
-                   className="px-4 py-2 bg-primary text-white rounded-lg font-semibold text-sm hover:bg-[#e66000] flex items-center gap-2 shadow-md shadow-primary/20"
+                   className="px-4 py-2 bg-primary text-white rounded-lg font-semibold text-sm hover:bg-blue-700 flex items-center gap-2 shadow-md shadow-primary/20"
                   >
                     <DownloadCloud className="w-4 h-4"/> {dict.download.saveBtn}
                  </button>

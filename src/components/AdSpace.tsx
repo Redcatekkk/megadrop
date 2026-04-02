@@ -48,9 +48,9 @@ export default function AdSpace({ dataAdSlot, className = "" }: { dataAdSlot?: s
 
   if (adBlocked) {
     return (
-      <div className={`w-full bg-orange-50 border-2 border-orange-100 rounded-[2rem] p-6 lg:p-8 flex flex-col items-center justify-center text-center space-y-4 shadow-sm ${className}`}>
+      <div className={`w-full glass-panel rounded-[2rem] p-6 lg:p-8 flex flex-col items-center justify-center text-center space-y-4 ${className}`}>
         <div className="flex gap-2 mb-1">
-          <ShieldCheck className="w-10 h-10 text-orange-500" />
+          <ShieldCheck className="w-10 h-10 text-[#F97316]" />
           <Heart className="w-10 h-10 text-red-500 fill-red-500" />
         </div>
         <h3 className="text-xl font-black text-foreground tracking-tight">{dict.adspace.adblockDetected}</h3>
@@ -62,7 +62,7 @@ export default function AdSpace({ dataAdSlot, className = "" }: { dataAdSlot?: s
   }
 
   return (
-    <div className={`w-full flex flex-col items-center justify-center bg-gray-50 border border-gray-200 rounded-[2rem] p-4 min-h-[120px] overflow-hidden ${className}`}>
+    <div className={`w-full flex flex-col items-center justify-center glass-panel shadow-sm rounded-[2rem] p-4 min-h-[120px] overflow-hidden ${className}`}>
       <span className="text-xs text-gray-400 font-bold mb-2 uppercase tracking-wider">{dict.adspace.sponsor}</span>
       <div className="w-full flex items-center justify-center relative min-h-[250px]">
         {/* Placeholder deweloperski widoczny na szaro jeśli AdSense nie wrzuci jeszcze iframe'a */}

@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import "../globals.css";
 
 import { getDictionary, Locale } from "@/lib/dictionaries";
 import { I18nProvider } from "@/components/I18nProvider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const plusJakartaSans = Plus_Jakarta_Sans({
+  variable: "--font-sans",
   subsets: ["latin"],
 });
 
@@ -42,7 +42,7 @@ export default async function RootLayout({
   return (
     <html
       lang={lang}
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${plusJakartaSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5365099957491511" crossOrigin="anonymous"></script>

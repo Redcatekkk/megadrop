@@ -208,7 +208,7 @@ export default function Home() {
                       onClick={copyToClipboard}
                       className={cn(
                         "h-full px-6 font-bold transition-colors m-1 rounded-lg",
-                        copied ? "bg-green-600 text-white" : "bg-primary text-white hover:bg-[#e66000]"
+                        copied ? "bg-green-600 text-white" : "bg-primary text-white hover:bg-blue-700 hover:shadow-md hover:shadow-primary/20"
                       )}
                     >
                       {copied ? dict.home.copied : dict.home.copy}
@@ -362,7 +362,7 @@ export default function Home() {
 
                       </div>
 
-                      <button onClick={handleUpload} className="w-full mt-4 py-4 rounded-xl font-bold text-white text-lg bg-primary hover:bg-[#e66000] focus:ring-4 focus:ring-primary/30 transition-all shadow-lg active:scale-[0.98]">
+                      <button onClick={handleUpload} className="w-full mt-4 py-4 rounded-xl font-bold text-white text-lg bg-[#F97316] hover:bg-[#EA580C] focus:ring-4 focus:ring-[#F97316]/30 transition-all shadow-lg hover:shadow-[#F97316]/20 active:scale-[0.98]">
                         {dict.home.uploadBtnAction}
                       </button>
                     </motion.div>
