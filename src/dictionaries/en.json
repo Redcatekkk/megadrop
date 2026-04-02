@@ -43,7 +43,8 @@
     "dbError": "Database integration error: ",
     "uploadError": "An error occurred while uploading to the server",
     "netError": "Network error occurred during upload.",
-    "unexpectedError": "Unexpected error occurs."
+    "unexpectedError": "Unexpected error occurs.",
+    "rateLimitError": "Too many upload attempts. To prevent spam (Rate Limit), we have enabled a security block. Please wait before uploading another file."
   },
   "download": {
     "enterPassword": "This file is secured",

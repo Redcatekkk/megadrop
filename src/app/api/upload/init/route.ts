@@ -4,6 +4,24 @@ import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { v4 as uuidv4 } from 'uuid';
 import { insertFileRecord } from '@/db/d1';
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
+
+// Opcjonalna inicjalizacja Redis. Zadziała tylko jeśli klucze Upstash zostaną dodane do Vercela.
+let ratelimit: Ratelimit | null = null;
+if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  const redis = new Redis({
+    url: process.env.UPSTASH_REDIS_REST_URL,
+    token: process.env.UPSTASH_REDIS_REST_TOKEN,
+  });
+
+  ratelimit = new Ratelimit({
+    redis: redis,
+    limiter: Ratelimit.slidingWindow(25, "1 h"),
+    analytics: true,
+    prefix: "@upstash/ratelimit/megadrop-upload"
+  });
+}
 
 export async function POST(req: Request) {
   try {
@@ -12,6 +30,24 @@ export async function POST(req: Request) {
 
     if (!filename || !sizeBytes) {
       return NextResponse.json({ success: false, error: "Brak wymaganych danych pliku" }, { status: 400 });
+    }
+
+    if (ratelimit) {
+      const ip = req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip") ?? "anon";
+      const { success, limit, reset, remaining } = await ratelimit.limit(ip);
+      if (!success) {
+        return NextResponse.json({ 
+          success: false, 
+          error: "Zbyt wiele prób wysyłania (Rate Limit). Spróbuj ponownie za godzinę." 
+        }, { 
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": limit.toString(),
+            "X-RateLimit-Remaining": remaining.toString(),
+            "X-RateLimit-Reset": reset.toString()
+          }
+        });
+      }
     }
 
     // Proste hashowanie hasła (dla MVP) - w docelowym rozwiązaniu użyć bcrypt

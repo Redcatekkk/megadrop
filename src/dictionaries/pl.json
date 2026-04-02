@@ -43,7 +43,8 @@
     "dbError": "Błąd integracji bazy danych: ",
     "uploadError": "Wystąpił błąd podczas wysyłania pliku na serwer",
     "netError": "Wystąpił błąd sieci podczas wysyłania.",
-    "unexpectedError": "Niespodziewany błąd."
+    "unexpectedError": "Niespodziewany błąd.",
+    "rateLimitError": "Zbyt wiele prób wysyłania. Aby zapobiec spamowi (Rate Limit), włączyliśmy blokadę bezpieczeństwa. Odczekaj dłuższy czas przed kolejnym plikiem."
   },
   "download": {
     "enterPassword": "Ten plik jest zabezpieczony",

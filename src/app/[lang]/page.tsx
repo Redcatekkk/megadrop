@@ -66,7 +66,11 @@ export default function Home() {
       const data = await res.json();
       
       if (!data.success) {
-        alert(dict.home.dbError + data.error);
+        if (res.status === 429) {
+          alert(dict.home.rateLimitError || "Zbyt wiele zapytań (Rate Limit). Odczekaj przed kolejnym wysłaniem.");
+        } else {
+          alert(dict.home.dbError + (data.error || ""));
+        }
         setIsUploading(false);
         return;
       }
