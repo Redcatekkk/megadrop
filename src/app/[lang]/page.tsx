@@ -2,8 +2,9 @@
 
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { UploadCloud, File as FileIcon, X, Lock, ShieldAlert, Zap, Link as LinkIcon, CheckCircle2, Clock, QrCode } from "lucide-react";
+import { UploadCloud, File as FileIcon, X, Lock, ShieldAlert, Zap, Link as LinkIcon, CheckCircle2, Clock, QrCode, Archive } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
+import JSZip from "jszip";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import AdSpace from "@/components/AdSpace";
@@ -18,6 +19,7 @@ export default function Home() {
 
   const [isDragging, setIsDragging] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [downloadLink, setDownloadLink] = useState("");
@@ -42,23 +44,41 @@ export default function Home() {
     e.preventDefault();
     setIsDragging(false);
     if (!isUploading && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      setFile(e.dataTransfer.files[0]);
+      const dropped = Array.from(e.dataTransfer.files);
+      if (dropped.length === 1) {
+        setFile(dropped[0]);
+        setFiles([]);
+      } else {
+        setFiles(dropped);
+        setFile(null);
+      }
     }
   }, [isUploading]);
 
   const handleUpload = async () => {
-    if (!file) return;
+    if (!file && files.length === 0) return;
     setIsUploading(true);
     setProgress(0);
+
+    // Auto-ZIP jeśli wiele plików
+    let uploadFile = file;
+    if (files.length > 1) {
+      const zip = new JSZip();
+      files.forEach(f => zip.file(f.name, f));
+      const blob = await zip.generateAsync({ type: "blob", compression: "DEFLATE", compressionOptions: { level: 6 } }, (meta) => {
+        setProgress(Math.round(meta.percent / 2)); // pierwsza połowa - pakowanie
+      });
+      uploadFile = new File([blob], `megadrop-${files.length}-files.zip`, { type: "application/zip" });
+    }
 
     try {
       const res = await fetch("/api/upload/init", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          filename: file.name,
-          sizeBytes: file.size,
-          mimeType: file.type,
+          filename: uploadFile!.name,
+          sizeBytes: uploadFile!.size,
+          mimeType: uploadFile!.type,
           isOneTime,
           hasPassword,
           password: hasPassword ? password : null,
@@ -79,12 +99,13 @@ export default function Home() {
 
       const xhr = new XMLHttpRequest();
       xhr.open("PUT", data.signedUrl, true);
-      xhr.setRequestHeader("Content-Type", file.type || "application/octet-stream");
+      xhr.setRequestHeader("Content-Type", uploadFile!.type || "application/octet-stream");
 
       xhr.upload.onprogress = (e) => {
         if (e.lengthComputable) {
-          const percentComplete = (e.loaded / e.total) * 100;
-          setProgress(Math.round(percentComplete));
+          const base = files.length > 1 ? 50 : 0; // jeśli był ZIP, upload = 50-100%
+          const uploadPercent = (e.loaded / e.total) * (files.length > 1 ? 50 : 100);
+          setProgress(Math.round(base + uploadPercent));
         }
       };
 
@@ -93,6 +114,7 @@ export default function Home() {
           setIsUploading(false);
           const link = `${window.location.origin}/f/${data.fileId}`;
           setDownloadLink(link);
+          setFiles([]);
         } else {
           alert(dict.home.uploadError);
           setIsUploading(false);
@@ -128,6 +150,7 @@ export default function Home() {
 
   const resetUpload = () => {
     setFile(null);
+    setFiles([]);
     setDownloadLink("");
     setProgress(0);
     setIsOneTime(false);
@@ -261,7 +284,7 @@ export default function Home() {
                     {dict.home.uploadNext}
                   </button>
                 </motion.div>
-              ) : !file ? (
+              ) : (!file && files.length === 0) ? (
                 <motion.div
                   key="upload-prompt"
                   initial={{ opacity: 0, y: 10 }}
@@ -274,11 +297,43 @@ export default function Home() {
                   </div>
                   <div>
                     <p className="text-xl font-bold text-foreground">{dict.home.clickOrDrag}</p>
-                    <p className="text-sm text-gray-500 mt-2 font-medium">{dict.home.noLimits}</p>
+                    <p className="text-sm text-slate-500 mt-2 font-medium">{dict.home.noLimits}</p>
+                    <p className="text-xs text-primary/70 mt-1 font-medium">Wiele plików? Wrzuc wszystkie — zapakujemy w ZIP!</p>
                   </div>
-                  <input type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onChange={(e) => {
-                    if (e.target.files && e.target.files.length > 0) setFile(e.target.files[0]);
-                  }} />
+                  <input
+                    type="file"
+                    multiple
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    onChange={(e) => {
+                      if (!e.target.files || e.target.files.length === 0) return;
+                      const picked = Array.from(e.target.files);
+                      if (picked.length === 1) { setFile(picked[0]); setFiles([]); }
+                      else { setFiles(picked); setFile(null); }
+                    }}
+                  />
+                </motion.div>
+              ) : files.length > 1 ? (
+                /* MULTI-FILE VIEW */
+                <motion.div key="multi-file" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center w-full z-20 space-y-3">
+                  <div className="w-14 h-14 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
+                    <Archive className="w-7 h-7 text-primary" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-base font-extrabold text-white">{files.length} plików wybranych</p>
+                    <p className="text-xs text-slate-400 mt-0.5">Zostaną spakowane w ZIP przed wyslaniem</p>
+                  </div>
+                  <div className="w-full max-h-32 overflow-y-auto space-y-1.5 pr-1">
+                    {files.map((f, i) => (
+                      <div key={i} className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5">
+                        <FileIcon className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        <span className="text-xs text-slate-300 truncate flex-1">{f.name}</span>
+                        <span className="text-xs text-slate-500 shrink-0">{formatFileSize(f.size)}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <button onClick={() => setFiles([])} className="text-xs text-slate-500 hover:text-white flex items-center gap-1 transition-colors">
+                    <X className="w-3.5 h-3.5" /> Wyczyść wybrane pliki
+                  </button>
                 </motion.div>
               ) : (
                 <motion.div
@@ -311,10 +366,10 @@ export default function Home() {
                     
                     <div className="flex-1 min-w-0 relative z-10">
                       <p className={cn("text-sm font-bold truncate transition-colors", isUploading ? "text-white drop-shadow-sm font-extrabold" : "text-foreground")}>
-                        {file.name}
+                        {file?.name}
                       </p>
                       <p className={cn("text-xs mt-0.5 font-bold transition-colors", isUploading ? "text-white/70 drop-shadow-sm" : "text-gray-400")}>
-                        {isUploading ? `${dict.home.uploadingFile} ${progress}%` : formatFileSize(file.size)}
+                        {isUploading ? `${dict.home.uploadingFile} ${progress}%` : formatFileSize(file?.size ?? 0)}
                       </p>
                     </div>
 
