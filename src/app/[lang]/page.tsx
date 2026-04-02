@@ -135,36 +135,45 @@ export default function Home() {
   }
 
   return (
-    <main className="flex-1 flex flex-col items-center justify-center p-6 min-h-screen">
-      <div className="z-10 w-full max-w-2xl flex flex-col items-center space-y-8">
+    <main className="w-full flex-1 flex flex-col lg:flex-row items-center lg:items-center justify-center max-w-7xl mx-auto p-6 md:p-12 min-h-screen gap-12 lg:gap-24 pt-24 lg:pt-0 relative">
+      
+      {/* LEWA KOLUMNA: Marketingowa */}
+      <div className="z-10 w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left space-y-8">
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/20 bg-primary/10 text-primary text-sm font-bold mb-2 shadow-sm"
+        >
+          <Zap className="w-4 h-4 fill-primary" />
+          <span>{dict.home.heroBadge}</span>
+        </motion.div>
         
-        <div className="text-center space-y-4">
-          <motion.div 
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/20 bg-primary/10 text-primary text-sm font-semibold mb-2"
-          >
-            <Zap className="w-4 h-4 fill-primary" />
-            <span>{dict.home.heroBadge}</span>
-          </motion.div>
-          <motion.h1 
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground mb-4"
-          >
-            {dict.home.heroTitle1} <br className="md:hidden" /> {dict.home.heroTitle2} <span className="text-gradient">{dict.home.heroTitleHighlight}</span>
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-gray-600 max-w-lg mx-auto font-medium"
-          >
-            {dict.home.heroDesc}
-          </motion.p>
-        </div>
+        <motion.h1 
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 leading-tight"
+        >
+          {dict.home.heroTitle1} <br className="hidden md:block" /> {dict.home.heroTitle2} <br className="hidden lg:block"/>
+          <span className="text-gradient block mt-1">{dict.home.heroTitleHighlight}</span>
+        </motion.h1>
+        
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="text-slate-600 text-lg max-w-xl font-medium leading-relaxed"
+        >
+          {dict.home.heroDesc}
+        </motion.p>
 
+        <div className="w-full mt-4 hidden lg:block">
+          <AdSpace dataAdSlot="upload_home_left" />
+        </div>
+      </div>
+
+      {/* PRAWA KOLUMNA: Interfejs Uploadu */}
+      <div className="z-10 w-full lg:w-1/2 max-w-xl flex flex-col space-y-6">
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -373,10 +382,10 @@ export default function Home() {
           </div>
         </motion.div>
 
-        <div className="w-full mt-4">
+        {/* AdSpace na mobile (pod panelem), na desktop schowany bo jest z lewej */}
+        <div className="w-full lg:hidden block">
           <AdSpace dataAdSlot="upload_home_bottom" />
         </div>
-
       </div>
     </main>
   );
