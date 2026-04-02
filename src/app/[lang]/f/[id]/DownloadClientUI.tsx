@@ -101,7 +101,7 @@ export default function DownloadClientUI({ id, fileName, sizeBytes, hasPassword,
               
               <motion.h1 
                 initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-                className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 leading-tight block w-full"
+                className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-tight block w-full"
               >
                 {dict.download.heroTitle1} <br className="hidden md:block"/> {dict.download.heroTitle2} <br className="hidden lg:block"/>
                 <span className="text-gradient block mt-1">{dict.download.heroTitleHighlight}</span>
@@ -109,7 +109,7 @@ export default function DownloadClientUI({ id, fileName, sizeBytes, hasPassword,
               
               <motion.p 
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
-                className="text-slate-600 text-lg max-w-xl font-medium leading-relaxed block w-full"
+                className="text-slate-400 text-lg max-w-xl font-medium leading-relaxed block w-full"
               >
                 {dict.download.heroDesc}
               </motion.p>
@@ -139,13 +139,13 @@ export default function DownloadClientUI({ id, fileName, sizeBytes, hasPassword,
               </p>
               
               {isOneTime && (
-                <p className="text-red-600 font-bold bg-red-50 border border-red-200 px-4 py-1.5 rounded-full text-sm flex items-center gap-1.5 shadow-sm">
+                <p className="text-red-400 font-bold bg-red-500/10 border border-red-500/20 px-4 py-1.5 rounded-full text-sm flex items-center gap-1.5">
                   <ShieldAlert className="w-4 h-4"/> {dict.download.bombWarningTag}
                 </p>
               )}
               
               {timeLeft && (
-                <p className="text-orange-600 font-bold bg-orange-50 border border-orange-200 px-4 py-1.5 rounded-full text-sm flex items-center gap-1.5 shadow-sm">
+                <p className="text-primary font-bold bg-primary/10 border border-primary/20 px-4 py-1.5 rounded-full text-sm flex items-center gap-1.5">
                   <Timer className="w-4 h-4"/> {timeLeft}
                 </p>
               )}
