@@ -2,7 +2,8 @@
 
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { UploadCloud, File as FileIcon, X, Lock, ShieldAlert, Zap, Link as LinkIcon, CheckCircle2, Clock } from "lucide-react";
+import { UploadCloud, File as FileIcon, X, Lock, ShieldAlert, Zap, Link as LinkIcon, CheckCircle2, Clock, QrCode } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import AdSpace from "@/components/AdSpace";
@@ -25,6 +26,7 @@ export default function Home() {
   const [password, setPassword] = useState("");
   const [expiresInHours, setExpiresInHours] = useState(168);
   const [copied, setCopied] = useState(false);
+  const [showQr, setShowQr] = useState(false);
 
   const onDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -198,12 +200,12 @@ export default function Home() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="flex flex-col items-center text-center space-y-6 w-full z-20"
                 >
-                  <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
-                    <CheckCircle2 className="w-8 h-8 text-green-600" />
+                  <div className="w-16 h-16 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
+                    <CheckCircle2 className="w-8 h-8 text-primary" />
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold text-foreground mb-2">{dict.home.fileReady}</h3>
-                    <p className="text-gray-600 font-medium">{dict.home.copyHelperText}</p>
+                    <p className="text-slate-400 font-medium">{dict.home.copyHelperText}</p>
                   </div>
                   
                   <div className="flex w-full overflow-hidden items-center pl-4 bg-white/5 rounded-xl border border-white/10 focus-within:border-primary focus-within:ring-2 ring-primary/20 transition-all">
@@ -222,6 +224,37 @@ export default function Home() {
                     >
                       {copied ? dict.home.copied : dict.home.copy}
                     </button>
+                  </div>
+
+                  {/* QR CODE TOGGLE */}
+                  <div className="w-full">
+                    <button
+                      onClick={() => setShowQr(v => !v)}
+                      className="flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-primary transition-colors mx-auto"
+                    >
+                      <QrCode className="w-4 h-4" />
+                      {showQr ? "Ukryj QR Code" : "Pokaż QR Code"}
+                    </button>
+                    <AnimatePresence>
+                      {showQr && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="flex justify-center mt-4 overflow-hidden"
+                        >
+                          <div className="p-3 bg-white rounded-2xl shadow-lg shadow-black/30">
+                            <QRCodeSVG
+                              value={downloadLink}
+                              size={160}
+                              bgColor="#ffffff"
+                              fgColor="#0A0A0F"
+                              level="M"
+                            />
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
 
                   <button onClick={resetUpload} className="text-sm font-semibold text-slate-400 hover:text-white underline decoration-2 underline-offset-4 mt-2">
