@@ -49,10 +49,15 @@ export default async function RootLayout({
       </head>
       <body className="min-h-full flex flex-col relative">
         <I18nProvider dictionary={dict}>
-          <header className="absolute top-6 left-6 md:top-8 md:left-8 z-50">
+          <header className="absolute top-6 left-6 right-6 md:top-8 md:left-8 md:right-8 z-50 flex items-center justify-between">
             <Link href={`/${lang}`} className="flex items-center gap-2.5 font-black text-2xl tracking-tight text-foreground hover:opacity-80 transition-opacity group">
               Megadrop
             </Link>
+            <nav>
+              <Link href={`/${lang}/stats`} className="text-sm font-semibold text-slate-400 hover:text-white transition-colors">
+                {lang === 'pl' ? 'Statystyki' : 'Stats'}
+              </Link>
+            </nav>
           </header>
           {children}
         </I18nProvider>

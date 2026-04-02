@@ -64,3 +64,15 @@ export async function deleteFileRecord(id: string) {
   const query = `DELETE FROM files WHERE id = ?`;
   return executeD1(query, [id]);
 }
+
+export async function getGlobalStats() {
+  const query = `
+    SELECT 
+      COUNT(id) as total_files,
+      SUM(size_bytes) as total_bytes,
+      SUM(download_count) as total_downloads
+    FROM files
+  `;
+  const data = await executeD1(query);
+  return data.result[0].results[0] || { total_files: 0, total_bytes: 0, total_downloads: 0 };
+}
