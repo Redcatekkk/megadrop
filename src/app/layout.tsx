@@ -32,8 +32,8 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        {/* Oficjalny skrypt Google AdSense do auto-reklam */}
-        <Script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5365099957491511" crossOrigin="anonymous" strategy="afterInteractive" />
+        {/* Oficjalny skrypt Google AdSense do auto-reklam - bezpośrednio w kodzie źródłowym by robot AdSense widział go od razu */}
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5365099957491511" crossOrigin="anonymous"></script>
       </head>
       <body className="min-h-full flex flex-col relative text-black">
         <header className="absolute top-6 left-6 md:top-8 md:left-8 z-50">
