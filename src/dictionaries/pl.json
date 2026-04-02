@@ -1,0 +1,59 @@
+{
+  "layout": {
+    "title": "Megadrop - Szybki transfer",
+    "description": "Błyskawiczne i bezpieczne przesyłanie plików bez limitów"
+  },
+  "home": {
+    "dragDrop": "Przeciągnij i upuść plik tutaj",
+    "dragDropOr": "LUB KLIKNIJ ABY WYBRAĆ",
+    "maxSize": "Rozmiar aż do 1TB na strzał",
+    "releaseFile": "Wypuść plik, aby go zabezpieczyć!",
+    "uploading": "Upiększanie pliku w toku...",
+    "passwordPlaceholder": "Opcjonalne hasło do zabezpieczenia",
+    "expiresLabel": "Wybierz kiedy plik wygaśnie (czas do destrukcji)",
+    "expires1Hour": "1 Godzina",
+    "expires24Hours": "24 Godziny",
+    "expires7Days": "7 Dni",
+    "expiresNever": "Nigdy",
+    "bombMode": "Zdetonowanie",
+    "bombModeDesc": "Jednorazowy podgląd",
+    "passwordSecure": "Zabezpieczone",
+    "linkReady": "Plik zabezpieczony i gotowy!",
+    "copyLinkText": "Skopiuj link URL do podzielenia się z innymi. Pamiętaj, po wygaśnięciu plik zniknie bezpowrotnie."
+  },
+  "download": {
+    "enterPassword": "Ten plik jest zabezpieczony",
+    "passwordPlaceholder": "Podaj hasło...",
+    "unlockAction": "Odblokuj plik",
+    "fileExpired": "Ten plik uległ samodestrukcji.",
+    "invalidPassword": "Nieprawidłowe hasło!",
+    "fileName": "Nazwa pliku",
+    "bombWarning": "To jest plik jednokrotnego pobrania. Podgląd bezpośrednio za pomocą playera jest tymczasowo **zablokowany** – zawartość można bezpiecznie pobrać dopiero wtedy zniknie on z serwerów dla bezpieczeństwa.",
+    "downloadBtn": "Pobierz Teraz",
+    "previewBtn": "Odtwórz / Podgląd",
+    "backBtn": "Wróć do pobierania",
+    "previewTitle": "Podgląd multimediów",
+    "expiresIn": "wygasa za",
+    "expired": "plik wygasł",
+    "minute": "minutę",
+    "minutes": "minut",
+    "minutes24": "minuty",
+    "hour": "godzinę",
+    "hours": "godzin",
+    "hours24": "godziny",
+    "day": "dzień",
+    "days": "dni",
+    "bombWarningTag": "Wybucha po pobraniu",
+    "errorClient": "Wystąpił błąd po stronie klienta.",
+    "processing": "Przetwarzanie...",
+    "saveBtn": "Zapisz",
+    "backBtnText": "Wróć",
+    "tosText": "Zgodnie z naszym regulaminem, plik pobierasz na własną odpowiedzialność. Zapisz go bezpiecznie na dysku lokalnym.",
+    "mustDownloadText": "Ten plik musi zostać pobrany aby go zobaczyć."
+  },
+  "adspace": {
+    "sponsor": "Reklama / Sponsor",
+    "adblockDetected": "Wykryliśmy Twojego AdBlocka!",
+    "adblockMessage": "I wiesz co? Zdecydowaliśmy zablokować reklamy specjalnie dla Ciebie. Nie każemy Ci go wyłączać, w zamian ciesz się pobieraniem pliku najwyższej jakości!"
+  }
+}

@@ -6,12 +6,15 @@ import { UploadCloud, File as FileIcon, X, Lock, ShieldAlert, Zap, Link as LinkI
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import AdSpace from "@/components/AdSpace";
+import { useI18n } from "@/components/I18nProvider";
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 export default function Home() {
+  const dict = useI18n();
+
   const [isDragging, setIsDragging] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);

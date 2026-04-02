@@ -1,0 +1,59 @@
+{
+  "layout": {
+    "title": "Megadrop - Fast Transfer",
+    "description": "Lightning fast and secure file transfer without limits"
+  },
+  "home": {
+    "dragDrop": "Drag and drop your file here",
+    "dragDropOr": "OR CLICK TO BROWSE",
+    "maxSize": "Up to 1TB per shot",
+    "releaseFile": "Release file to secure it!",
+    "uploading": "Beautifying file in progress...",
+    "passwordPlaceholder": "Optional password protection",
+    "expiresLabel": "Choose when the file expires (time to destruction)",
+    "expires1Hour": "1 Hour",
+    "expires24Hours": "24 Hours",
+    "expires7Days": "7 Days",
+    "expiresNever": "Never",
+    "bombMode": "Detonation",
+    "bombModeDesc": "One-time view only",
+    "passwordSecure": "Secured",
+    "linkReady": "File secured and ready!",
+    "copyLinkText": "Copy URL link to share with others. Remember, once expired, the file vanishes forever."
+  },
+  "download": {
+    "enterPassword": "This file is secured",
+    "passwordPlaceholder": "Enter password...",
+    "unlockAction": "Unlock file",
+    "fileExpired": "This file has self-destructed.",
+    "invalidPassword": "Invalid password!",
+    "fileName": "File name",
+    "bombWarning": "This is a one-time download file. Embedded player preview is temporarily **disabled** – content can only be downloaded safely and then it vanishes from servers for security.",
+    "downloadBtn": "Download Now",
+    "previewBtn": "Play / Preview",
+    "backBtn": "Back to download",
+    "previewTitle": "Media Preview",
+    "expiresIn": "expires in",
+    "expired": "file expired",
+    "minute": "minute",
+    "minutes": "minutes",
+    "minutes24": "minutes",
+    "hour": "hour",
+    "hours": "hours",
+    "hours24": "hours",
+    "day": "day",
+    "days": "days",
+    "bombWarningTag": "Detonates after download",
+    "errorClient": "A client-side error occurred.",
+    "processing": "Processing...",
+    "saveBtn": "Save",
+    "backBtnText": "Back",
+    "tosText": "As per our terms of service, you download this file at your own risk. Please save it securely on your local drive.",
+    "mustDownloadText": "This file must be downloaded to be viewed."
+  },
+  "adspace": {
+    "sponsor": "Advertisement / Sponsor",
+    "adblockDetected": "We detected your AdBlocker!",
+    "adblockMessage": "And you know what? We decided to hide the ads specially for you. We won't force you to disable it, enjoy the top tier file download experience instead!"
+  }
+}
